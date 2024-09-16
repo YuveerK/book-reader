@@ -11,22 +11,50 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import * as SQLite from "expo-sqlite";
+import { Picker } from "@react-native-picker/picker"; // Import Picker for genre dropdown
 
 const EditBook = ({ route }) => {
   const { book } = route.params; // Extract the book object from route.params
 
   // State variables
   const [bookName, setBookName] = useState("");
+  const [author, setAuthor] = useState(""); // State for author
+  const [genre, setGenre] = useState(""); // State for genre
   const [bookCover, setBookCover] = useState("");
   const [db, setDb] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [files, setFiles] = useState([]);
   const [bookSize, setBookSize] = useState("");
 
+  // List of book genres for dropdown
+  const genres = [
+    "Fiction",
+    "Non-fiction",
+    "Mystery",
+    "Thriller",
+    "Romance",
+    "Science Fiction",
+    "Fantasy",
+    "Biography",
+    "Self-help",
+    "Historical",
+    "Children's",
+    "Adventure",
+    "Horror",
+    "Poetry",
+    "Graphic Novel",
+    "Young Adult",
+    "Classics",
+    "Philosophy",
+    "Crime",
+  ];
+
   useEffect(() => {
     // Initialize the state when the book data is available
     if (book) {
       setBookName(book.bookName || "");
+      setAuthor(book.author || ""); // Set author from book object
+      setGenre(book.genre || ""); // Set genre from book object
       setBookCover(book.bookCover || "");
       setFiles([{ uri: book.bookUri, name: book.bookName }]);
       setBookSize(book.bookSize || "");
@@ -82,7 +110,7 @@ const EditBook = ({ route }) => {
 
   // Update Book in Library Function
   const updateBookInLibrary = async () => {
-    if (!db || !bookName || files.length === 0) {
+    if (!db || !bookName || files.length === 0 || !author || !genre) {
       alert("Please fill in all the details and select a book file.");
       return;
     }
@@ -91,8 +119,17 @@ const EditBook = ({ route }) => {
       const updatedAt = new Date().toISOString();
 
       await db.runAsync(
-        `UPDATE books SET bookCover = ?, bookUri = ?, bookSize = ?, bookName = ?, updatedAt = ? WHERE id = ?;`,
-        [bookCover, bookUri, bookSize, bookName, updatedAt, book.id]
+        `UPDATE books SET bookCover = ?, bookUri = ?, bookSize = ?, bookName = ?, author = ?, genre = ?, updatedAt = ? WHERE id = ?;`,
+        [
+          bookCover,
+          bookUri,
+          bookSize,
+          bookName,
+          author,
+          genre,
+          updatedAt,
+          book.id,
+        ]
       );
 
       alert("Book updated successfully!");
@@ -133,6 +170,29 @@ const EditBook = ({ route }) => {
           className="w-full text-white border border-gray-500 py-2 px-4 rounded-md bg-gray-800 mb-8"
           placeholderTextColor="gray"
         />
+
+        {/* Author Input */}
+        <TextInput
+          onChangeText={setAuthor}
+          value={author}
+          placeholder="Author"
+          className="w-full text-white border border-gray-500 py-2 px-4 rounded-md bg-gray-800 mb-8"
+          placeholderTextColor="gray"
+        />
+
+        {/* Genre Picker */}
+        <View className="w-full border border-gray-500 py-2 px-4 rounded-md bg-gray-800 mb-8">
+          <Picker
+            selectedValue={genre}
+            onValueChange={(itemValue) => setGenre(itemValue)}
+            style={{ color: "white" }}
+          >
+            <Picker.Item label="Select Genre" value="" />
+            {genres.map((genreItem, index) => (
+              <Picker.Item key={index} label={genreItem} value={genreItem} />
+            ))}
+          </Picker>
+        </View>
 
         {/* Document Picker */}
         <TouchableOpacity

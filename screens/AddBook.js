@@ -11,15 +11,41 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import * as SQLite from "expo-sqlite";
+import { Picker } from "@react-native-picker/picker"; // Import Picker for genre dropdown
 
 const AddBook = ({ navigation }) => {
   // State variables
   const [files, setFiles] = useState([]);
   const [bookName, setBookName] = useState("");
   const [bookCover, setBookCover] = useState("");
+  const [author, setAuthor] = useState(""); // State for author
+  const [genre, setGenre] = useState(""); // State for genre
   const [db, setDb] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [bookSize, setBookSize] = useState(0);
+
+  // List of book genres for dropdown
+  const genres = [
+    "Fiction",
+    "Non-fiction",
+    "Mystery",
+    "Thriller",
+    "Romance",
+    "Science Fiction",
+    "Fantasy",
+    "Biography",
+    "Self-help",
+    "Historical",
+    "Children's",
+    "Adventure",
+    "Horror",
+    "Poetry",
+    "Graphic Novel",
+    "Young Adult",
+    "Classics",
+    "Philosophy",
+    "Crime",
+  ];
 
   useEffect(() => {
     async function initializeDb() {
@@ -71,7 +97,7 @@ const AddBook = ({ navigation }) => {
 
   // Add Book to Library Function
   const addBookToLibrary = async () => {
-    if (!db || !bookName || files.length === 0) {
+    if (!db || !bookName || files.length === 0 || !author || !genre) {
       alert("Please fill in all the details and select a book file.");
       return;
     }
@@ -82,13 +108,15 @@ const AddBook = ({ navigation }) => {
       const updatedAt = createdAt;
 
       await db.runAsync(
-        `INSERT INTO books (bookCover, bookUri, bookSize, bookName, pagesRead, createdAt, updatedAt)
-         VALUES (?, ?, ?, ?, ?, ?, ?);`,
+        `INSERT INTO books (bookCover, bookUri, bookSize, bookName, author, genre, pagesRead, createdAt, updatedAt)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`,
         [
           bookCover,
           bookUri,
           bookSize,
           bookName,
+          author,
+          genre,
           pagesRead,
           createdAt,
           updatedAt,
@@ -97,6 +125,8 @@ const AddBook = ({ navigation }) => {
 
       setBookName("");
       setBookCover("");
+      setAuthor("");
+      setGenre("");
       setFiles([]);
       alert("Book added to library successfully!");
     } catch (error) {
@@ -136,6 +166,29 @@ const AddBook = ({ navigation }) => {
           className="w-full text-white border border-gray-500 py-2 px-4 rounded-md bg-gray-800 mb-8"
           placeholderTextColor="gray"
         />
+
+        {/* Author Input */}
+        <TextInput
+          onChangeText={setAuthor}
+          value={author}
+          placeholder="Author"
+          className="w-full text-white border border-gray-500 py-2 px-4 rounded-md bg-gray-800 mb-8"
+          placeholderTextColor="gray"
+        />
+
+        {/* Genre Picker */}
+        <View className="w-full border border-gray-500 py-2 px-4 rounded-md bg-gray-800 mb-8">
+          <Picker
+            selectedValue={genre}
+            onValueChange={(itemValue) => setGenre(itemValue)}
+            style={{ color: "white" }}
+          >
+            <Picker.Item label="Select Genre" value="" />
+            {genres.map((genreItem, index) => (
+              <Picker.Item key={index} label={genreItem} value={genreItem} />
+            ))}
+          </Picker>
+        </View>
 
         {/* Document Picker */}
         <TouchableOpacity

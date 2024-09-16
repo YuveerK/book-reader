@@ -17,6 +17,7 @@ const Navigation = () => {
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Home Screen" component={HomeScreen} />
+        <Stack.Screen name="Pdf Home Screen" component={PdfViewer} />
       </Stack.Navigator>
     );
   }
@@ -36,7 +37,7 @@ const Navigation = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarStyle: {
-          backgroundColor: "#111827",
+          backgroundColor: "black",
           padding: 10,
           paddingBottom: 5,
         },

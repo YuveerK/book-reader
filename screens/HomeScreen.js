@@ -1,92 +1,132 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
-  StyleSheet,
   Text,
   View,
-  Button,
-  FlatList,
   TouchableOpacity,
+  ScrollView,
+  Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as DocumentPicker from "expo-document-picker";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { genres } from "../constants/genres.const";
+import * as SQLite from "expo-sqlite";
+import { useFocusEffect } from "@react-navigation/native";
+import Book from "../components/Book";
+import Stats from "../components/Stats";
 
 const HomeScreen = ({ navigation }) => {
-  const [files, setFiles] = useState([]);
+  const [db, setDb] = useState(null);
+  const [books, setBooks] = useState([]);
 
-  const pickDocument = async () => {
+  // Initialize the database and create the 'books' table
+  useEffect(() => {
+    const initializeDb = async () => {
+      try {
+        const database = await SQLite.openDatabaseAsync("books.db");
+
+        // Create the 'books' table if it doesn't exist
+        await database.execAsync(`
+          CREATE TABLE IF NOT EXISTS books (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            bookCover TEXT,
+            bookUri TEXT,
+            bookSize INTEGER,
+            bookName TEXT,
+            author TEXT,
+            genre TEXT,
+            pagesRead INTEGER,
+            totalPages INTEGER,
+            createdAt TEXT,
+            updatedAt TEXT
+          );
+        `);
+
+        setDb(database);
+      } catch (error) {
+        console.error("Error initializing database:", error);
+      }
+    };
+
+    initializeDb();
+  }, []);
+
+  // Fetch books whenever the screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      fetchBooks();
+    }, [db])
+  );
+
+  const fetchBooks = async () => {
     try {
-      const result = await DocumentPicker.getDocumentAsync({
-        multiple: true, // Allow selecting multiple files
-        type: "application/pdf", // Restrict to PDF files only
-      });
-
-      if (!result.canceled && result.assets) {
-        // Add all the selected files to the state
-        setFiles((prevFiles) => [...prevFiles, ...result.assets]);
+      if (db) {
+        const books = await db.getAllAsync(
+          "SELECT * FROM books order by updatedAt desc;"
+        );
+        setBooks(books);
       }
     } catch (error) {
-      console.error("Error picking document:", error);
+      console.error("Error fetching books:", error);
     }
   };
 
-  // Convert size from bytes to megabytes
-  const formatSizeInMB = (size) => {
-    const sizeInMB = size / 1048576; // 1 MB = 1024 * 1024 bytes
-    return sizeInMB.toFixed(2); // Limit to 2 decimal places
-  };
-
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Document Picker</Text>
-      <Button title="Pick Documents" onPress={pickDocument} />
-      <FlatList
-        data={files}
-        keyExtractor={(item) => item.uri}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.item}
-            onPress={() =>
-              navigation.navigate("Pdf Screen", { fileUri: item.uri })
-            }
-          >
-            <Text style={styles.fileName}>Name: {item.name}</Text>
-            <Text style={styles.fileInfo}>MIME Type: {item.mimeType}</Text>
-            <Text style={styles.fileInfo}>
-              Size: {formatSizeInMB(item.size)} MB
-            </Text>
-            <Text style={styles.fileInfo}>URI: {item.uri}</Text>
-          </TouchableOpacity>
-        )}
-      />
+    <SafeAreaView className="flex-1 p-4 bg-black">
+      <ScrollView>
+        <View className="w-full flex-row items-center justify-between">
+          <Text className="text-2xl text-white">Welcome Back 👋</Text>
+          <View>
+            <AntDesign name="search1" size={24} color="white" />
+          </View>
+        </View>
+        <Text className="text-white mt-[30px] text-xl px-4">
+          Your Progress (Top 3 Most Recent Books)
+        </Text>
+
+        {/* Statistics */}
+        <Stats books={books} navigation={navigation} />
+
+        <View className="w-full flex flex-row items-center mt-8 justify-between px-4">
+          <Text className="text-white font-bold text-3xl">For You 👀</Text>
+          <View>
+            <AntDesign name="arrowright" size={24} color="white" />
+          </View>
+        </View>
+
+        <ScrollView
+          horizontal={true}
+          contentContainerStyle={{ height: 30, marginTop: 20 }}
+          showsHorizontalScrollIndicator={false}
+        >
+          {genres.map((genre, index) => (
+            <TouchableOpacity
+              key={index}
+              className="w-fit h-fit px-4 flex items-center justify-center rounded-full bg-blue-500 mx-4"
+            >
+              <Text className="text-white">{genre}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        {/* Horizontal scroll for books */}
+        <ScrollView
+          horizontal={true}
+          contentContainerStyle={{
+            paddingLeft: 10,
+            paddingRight: 10,
+            paddingTop: 20,
+          }}
+          showsHorizontalScrollIndicator={false}
+        >
+          {books.map((book) => (
+            <View key={book.id} style={{ marginRight: 15 }}>
+              <Book book={book} navigation={navigation} />
+            </View>
+          ))}
+        </ScrollView>
+      </ScrollView>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "black",
-    padding: 16,
-  },
-  title: {
-    color: "white",
-    fontSize: 24,
-    marginBottom: 16,
-  },
-  item: {
-    backgroundColor: "#1c1c1c",
-    padding: 12,
-    marginVertical: 8,
-    borderRadius: 6,
-  },
-  fileName: {
-    color: "white",
-    fontSize: 16,
-  },
-  fileInfo: {
-    color: "gray",
-    fontSize: 14,
-  },
-});
 
 export default HomeScreen;

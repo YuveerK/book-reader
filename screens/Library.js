@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
   Dimensions,
+  Button,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -31,6 +32,8 @@ const Library = ({ navigation }) => {
             bookUri TEXT,
             bookSize INTEGER,
             bookName TEXT,
+            author,
+            genre,
             pagesRead INTEGER,
             totalPages INTEGER,
             createdAt TEXT,
@@ -51,19 +54,6 @@ const Library = ({ navigation }) => {
   // Fetch books whenever the screen is focused
   useFocusEffect(
     useCallback(() => {
-      let isActive = true;
-
-      const fetchBooks = async () => {
-        try {
-          if (db && isActive) {
-            const books = await db.getAllAsync("SELECT * FROM books;");
-            setBooks(books);
-          }
-        } catch (error) {
-          console.error("Error fetching books:", error);
-        }
-      };
-
       fetchBooks();
 
       return () => {
@@ -71,6 +61,18 @@ const Library = ({ navigation }) => {
       };
     }, [db])
   );
+
+  const fetchBooks = async () => {
+    try {
+      let isActive = true;
+      if (db && isActive) {
+        const books = await db.getAllAsync("SELECT * FROM books;");
+        setBooks(books);
+      }
+    } catch (error) {
+      console.error("Error fetching books:", error);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -83,9 +85,21 @@ const Library = ({ navigation }) => {
   // Calculate card width and image height based on aspect ratio
   const cardWidth = Dimensions.get("window").width / 2 - 24;
   const imageHeight = (cardWidth * 3) / 2; // Height adjusted for 2:3 aspect ratio
-
+  const deleteBooksTable = async () => {
+    try {
+      await db.execAsync(`
+      DROP TABLE IF EXISTS books
+      `);
+      await db.execAsync(`
+      DROP TABLE IF EXISTS notes
+      `);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
-    <SafeAreaView className="flex-1 bg-gray-900">
+    <SafeAreaView className="flex-1 bg-black">
+      <Button title="Delete Books Table" onPress={deleteBooksTable} />
       <Text className="text-white text-3xl font-bold text-center mt-6 mb-4">
         Your Library 📚
       </Text>

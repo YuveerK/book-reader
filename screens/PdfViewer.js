@@ -7,8 +7,6 @@ import { Text, TouchableOpacity, View, TextInput, Alert } from "react-native";
 const PdfViewer = ({ route }) => {
   const { fileUri, book } = route.params;
   const [db, setDb] = useState(null);
-  const [activeTab, setActiveTab] = useState("book"); // 'book' or 'notes'
-  const [notes, setNotes] = useState("");
 
   useEffect(() => {
     initializeDb();
@@ -75,80 +73,19 @@ const PdfViewer = ({ route }) => {
     }
   };
 
-  const renderContent = () => {
-    if (activeTab === "book") {
-      return (
-        <Pdf
-          source={{ uri: fileUri }}
-          className="flex-1"
-          page={book.pagesRead || 1} // Set the initial page here
-          onLoadComplete={(numberOfPages, filePath) => {
-            updateBook(numberOfPages);
-          }}
-          onPageChanged={(page) => {
-            updateReadPages(page);
-          }}
-        />
-      );
-    } else if (activeTab === "notes") {
-      return (
-        <View className="flex-1 bg-[#f5f5f5] p-4">
-          <TextInput
-            className="flex-1 text-base text-black bg-white rounded-lg p-3"
-            multiline
-            placeholder="Type your notes here..."
-            placeholderTextColor="gray"
-            value={notes}
-            onChangeText={setNotes}
-            textAlignVertical="top"
-          />
-          <TouchableOpacity
-            onPress={saveNotes}
-            className="mt-2.5 bg-[#4287f5] py-3 rounded-lg items-center"
-          >
-            <Text className="text-base font-bold text-white">Save Notes</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
-  };
-
   return (
     <SafeAreaView className="flex-1 bg-[#1a1a1a]">
-      {/* Tab Bar */}
-      <View className="flex-row h-12 bg-[#2c2c2c] items-center justify-around">
-        <TouchableOpacity
-          onPress={() => setActiveTab("book")}
-          className={`flex-1 items-center justify-center py-2.5 ${
-            activeTab === "book" ? "border-b-[3px] border-b-[#4287f5]" : ""
-          }`}
-        >
-          <Text
-            className={`text-base font-bold ${
-              activeTab === "book" ? "text-white" : "text-[#ccc]"
-            }`}
-          >
-            View Book
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setActiveTab("notes")}
-          className={`flex-1 items-center justify-center py-2.5 ${
-            activeTab === "notes" ? "border-b-[3px] border-b-[#4287f5]" : ""
-          }`}
-        >
-          <Text
-            className={`text-base font-bold ${
-              activeTab === "notes" ? "text-white" : "text-[#ccc]"
-            }`}
-          >
-            Notes
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Content */}
-      {renderContent()}
+      <Pdf
+        source={{ uri: fileUri }}
+        className="flex-1"
+        page={book.pagesRead || 1} // Set the initial page here
+        onLoadComplete={(numberOfPages, filePath) => {
+          updateBook(numberOfPages);
+        }}
+        onPageChanged={(page) => {
+          updateReadPages(page);
+        }}
+      />
     </SafeAreaView>
   );
 };

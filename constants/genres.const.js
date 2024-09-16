@@ -1,0 +1,22 @@
+// List of book genres for dropdown
+export const genres = [
+  "Fiction",
+  "Non-fiction",
+  "Mystery",
+  "Thriller",
+  "Romance",
+  "Science Fiction",
+  "Fantasy",
+  "Biography",
+  "Self-help",
+  "Historical",
+  "Children's",
+  "Adventure",
+  "Horror",
+  "Poetry",
+  "Graphic Novel",
+  "Young Adult",
+  "Classics",
+  "Philosophy",
+  "Crime",
+];
