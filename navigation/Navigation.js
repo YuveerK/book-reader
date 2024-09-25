@@ -8,16 +8,38 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Library from "../screens/Library";
 import AddBook from "../screens/AddBook";
 import EditBook from "../screens/EditBook";
+import Notes from "../screens/Notes";
+import NotesHomeScreen from "../screens/NotesHomeScreen";
+import Insights from "../screens/Insights";
 
 const Navigation = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
   const LibraryStack = createNativeStackNavigator();
+  const InsightsStack = createNativeStackNavigator();
+
+  function InsightStackScreen() {
+    return (
+      <InsightsStack.Navigator screenOptions={{ headerShown: false }}>
+        <InsightsStack.Screen name="Insights Screen" component={Insights} />
+      </InsightsStack.Navigator>
+    );
+  }
+
   function HomeStackScreen() {
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Home Screen" component={HomeScreen} />
         <Stack.Screen name="Pdf Home Screen" component={PdfViewer} />
+        <LibraryStack.Screen
+          options={{
+            headerShown: true,
+            headerStyle: { backgroundColor: "black" },
+            headerTintColor: "white",
+          }}
+          name="Notes Home Screen"
+          component={NotesHomeScreen}
+        />
       </Stack.Navigator>
     );
   }
@@ -27,6 +49,7 @@ const Navigation = () => {
       <LibraryStack.Navigator screenOptions={{ headerShown: false }}>
         <LibraryStack.Screen name="Library Page" component={Library} />
         <LibraryStack.Screen name="Pdf Screen" component={PdfViewer} />
+
         <LibraryStack.Screen name="Add Book" component={AddBook} />
         <LibraryStack.Screen name="Edit Book" component={EditBook} />
       </LibraryStack.Navigator>
@@ -51,6 +74,8 @@ const Navigation = () => {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Library") {
             iconName = focused ? "bookshelf" : "bookshelf";
+          } else if (route.name === "Insights") {
+            iconName = focused ? "google-analytics" : "google-analytics";
           }
 
           return (
@@ -61,6 +86,7 @@ const Navigation = () => {
     >
       <Tab.Screen name="Home" component={HomeStackScreen} />
       <Tab.Screen name="Library" component={LibraryStackScreen} />
+      <Tab.Screen name="Insights" component={InsightStackScreen} />
     </Tab.Navigator>
   );
 };

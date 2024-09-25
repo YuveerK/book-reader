@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  Button,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -17,6 +18,7 @@ import Stats from "../components/Stats";
 const HomeScreen = ({ navigation }) => {
   const [db, setDb] = useState(null);
   const [books, setBooks] = useState([]);
+  const [genre, setGenre] = useState("All");
 
   // Initialize the database and create the 'books' table
   useEffect(() => {
@@ -34,6 +36,7 @@ const HomeScreen = ({ navigation }) => {
             bookName TEXT,
             author TEXT,
             genre TEXT,
+            isComplete INTEGER,
             pagesRead INTEGER,
             totalPages INTEGER,
             createdAt TEXT,
@@ -41,6 +44,19 @@ const HomeScreen = ({ navigation }) => {
           );
         `);
 
+        console.log("creating reading session table");
+        await database.execAsync(`
+          CREATE TABLE IF NOT EXISTS reading_session (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            bookId INTEGER,
+            lastReadPage INTEGER,
+            totalPagesRead INTEGER,
+            duration INTEGER,  
+            createdAt TEXT,
+            updatedAt TEXT
+          );
+        `);
+        console.log("created reading session table");
         setDb(database);
       } catch (error) {
         console.error("Error initializing database:", error);
@@ -70,9 +86,22 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  const deleteTables = async () => {
+    try {
+      if (db) {
+        // await db.execAsync("delete from books");
+        // await db.execAsync("delete from reading_sessions");
+        await db.execAsync("drop table reading_session");
+        await db.execAsync("drop table books");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <SafeAreaView className="flex-1 p-4 bg-black">
       <ScrollView>
+        <Button title="delete" onPress={deleteTables} />
         <View className="w-full flex-row items-center justify-between">
           <Text className="text-2xl text-white">Welcome Back 👋</Text>
           <View>
@@ -80,7 +109,7 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
         <Text className="text-white mt-[30px] text-xl px-4">
-          Your Progress (Top 3 Most Recent Books)
+          Jump Right Back In! 😁
         </Text>
 
         {/* Statistics */}
@@ -102,6 +131,7 @@ const HomeScreen = ({ navigation }) => {
             <TouchableOpacity
               key={index}
               className="w-fit h-fit px-4 flex items-center justify-center rounded-full bg-blue-500 mx-4"
+              onPress={() => setGenre(genre)}
             >
               <Text className="text-white">{genre}</Text>
             </TouchableOpacity>
@@ -118,11 +148,18 @@ const HomeScreen = ({ navigation }) => {
           }}
           showsHorizontalScrollIndicator={false}
         >
-          {books.map((book) => (
-            <View key={book.id} style={{ marginRight: 15 }}>
-              <Book book={book} navigation={navigation} />
-            </View>
-          ))}
+          {books
+            .filter((book) => {
+              // If the genre is "All", return all books
+              if (genre === "All") return true;
+              // Otherwise, filter books by the selected genre
+              return book.genre.includes(genre);
+            })
+            .map((book) => (
+              <View key={book.id} style={{ marginRight: 15 }}>
+                <Book book={book} navigation={navigation} />
+              </View>
+            ))}
         </ScrollView>
       </ScrollView>
     </SafeAreaView>

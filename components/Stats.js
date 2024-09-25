@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 // Helper function to get motivational messages based on progress
 const getMotivationalMessage = (progress) => {
@@ -50,7 +51,12 @@ const Stats = ({ books, navigation }) => {
                 }
               >
                 {/* Display book name, author, and percentage read */}
-                <Text style={styles.bookTitle}>{book.bookName}</Text>
+                <View className="w-full flex-row items-center justify-between">
+                  <Text style={styles.bookTitle}>{book.bookName}</Text>
+                  <View>
+                    <AntDesign name="arrowright" size={20} color="white" />
+                  </View>
+                </View>
                 <Text style={styles.bookAuthor}>by {book.author}</Text>
                 <Text style={styles.percentageText}>
                   {progress.toFixed(1)}% read - {book.pagesRead}/

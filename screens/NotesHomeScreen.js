@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 
-const Notes = () => {
+const NotesHomeScreen = () => {
   const [typedNotes, setTypedNotes] = useState("");
 
   return (
@@ -29,7 +29,7 @@ const Notes = () => {
   );
 };
 
-export default Notes;
+export default NotesHomeScreen;
 
 const styles = StyleSheet.create({
   container: {

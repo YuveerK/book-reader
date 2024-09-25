@@ -1,5 +1,6 @@
 // List of book genres for dropdown
 export const genres = [
+  "All",
   "Fiction",
   "Non-fiction",
   "Mystery",
