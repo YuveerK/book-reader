@@ -7,18 +7,26 @@ import {
   Image,
   Dimensions,
   Button,
+  TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import * as SQLite from "expo-sqlite";
 import { useFocusEffect } from "@react-navigation/native";
-
+import { genres } from "../constants/genres.const";
+import GenreCard from "../components/GenreCard";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import Ionicons from "@expo/vector-icons/Ionicons";
 const Library = ({ navigation }) => {
   const [db, setDb] = useState(null);
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [isFilterOpened, setIsFilterOpened] = useState(false);
 
-  // Initialize the database and create the 'books' table
+  const cardWidth = Dimensions.get("window").width / 2 - 24;
+  const imageHeight = (cardWidth * 3) / 2;
+
   useEffect(() => {
     const initializeDb = async () => {
       try {
@@ -51,7 +59,6 @@ const Library = ({ navigation }) => {
     initializeDb();
   }, []);
 
-  // Fetch books whenever the screen is focused
   useFocusEffect(
     useCallback(() => {
       fetchBooks();
@@ -82,31 +89,41 @@ const Library = ({ navigation }) => {
     );
   }
 
-  // Calculate card width and image height based on aspect ratio
-  const cardWidth = Dimensions.get("window").width / 2 - 24;
-  const imageHeight = (cardWidth * 3) / 2; // Height adjusted for 2:3 aspect ratio
-  const deleteBooksTable = async () => {
-    try {
-      await db.execAsync(`
-      DROP TABLE IF EXISTS books
-      `);
-      await db.execAsync(`
-      DROP TABLE IF EXISTS notes
-      `);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   return (
     <SafeAreaView className="flex-1 bg-black">
-      <Button title="Delete Books Table" onPress={deleteBooksTable} />
       <Text className="text-white text-3xl font-bold text-center mt-6 mb-4">
         Your Library 📚
       </Text>
+      <View className="px-2 mb-4 flex-row items-center justify-between">
+        <View className="flex flex-row rounded-md items-center flex-1 px-4 py-2 border border-gray-500">
+          <AntDesign name="search1" size={24} color="white" />
+          <TextInput
+            onChangeText={setSearch}
+            value={search}
+            placeholderTextColor={"white"}
+            placeholder="Search Your Library"
+            className="ml-2 flex-1" // Make the TextInput expand to fill the remaining space
+          />
+        </View>
+        <TouchableOpacity
+          onPress={() => setIsFilterOpened(true)}
+          className="ml-2 border border-gray-500 px-4 py-2 rounded-md"
+        >
+          <Ionicons name="filter" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
 
       <ScrollView
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 100 }}
       >
+        <ScrollView
+          horizontal={true}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
+        >
+          {genres.map((genre, index) => (
+            <GenreCard genre={genre.genre} imageUrl={genre.image} key={index} />
+          ))}
+        </ScrollView>
         {books.length === 0 ? (
           <View className="flex-1 items-center justify-center mt-20">
             <Image
@@ -196,6 +213,33 @@ const Library = ({ navigation }) => {
       >
         <FontAwesome6 name="plus" size={24} color="white" />
       </TouchableOpacity>
+      {isFilterOpened && (
+        <View
+          className="absolute top-0 left-0 w-full flex items-center justify-center bg-black/70"
+          style={{ height: Dimensions.get("screen").height }}
+        >
+          <View
+            className="bg-gray-900"
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height / 2,
+              padding: 15,
+              position: "relative",
+            }}
+          >
+            <Text className="text-center text-white text-2xl">
+              Filter Your Books 🛜
+            </Text>
+
+            <TouchableOpacity
+              className="absolute top-[13px] right-[13px]"
+              onPress={() => setIsFilterOpened(false)}
+            >
+              <AntDesign name="closecircleo" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

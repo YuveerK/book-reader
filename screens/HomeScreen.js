@@ -131,9 +131,9 @@ const HomeScreen = ({ navigation }) => {
             <TouchableOpacity
               key={index}
               className="w-fit h-fit px-4 flex items-center justify-center rounded-full bg-blue-500 mx-4"
-              onPress={() => setGenre(genre)}
+              onPress={() => setGenre(genre.genre)}
             >
-              <Text className="text-white">{genre}</Text>
+              <Text className="text-white">{genre.genre}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>

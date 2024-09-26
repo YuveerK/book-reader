@@ -2,14 +2,14 @@ import React, { useCallback, useEffect, useState, useRef } from "react";
 import Pdf from "react-native-pdf";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as SQLite from "expo-sqlite";
-import { Button, TouchableOpacity, Text } from "react-native";
+import { Button, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useFocusEffect } from "@react-navigation/native";
 
 const PdfViewer = ({ route, navigation }) => {
   const { fileUri, book } = route.params;
   const [db, setDb] = useState(null);
-  const readingSessionIdRef = useRef(null); // Create a ref to store readingSessionId
+  const readingSessionIdRef = useRef(null);
   const pagesReadForSessionRef = useRef(book.pagesRead || 1);
 
   useEffect(() => {
@@ -54,11 +54,19 @@ const PdfViewer = ({ route, navigation }) => {
 
       initializeSession();
 
+      const onBlur = () => {
+        endReadingSession();
+        navigation.pop(); // Remove the screen from the stack when unfocused
+      };
+
+      const unsubscribeBlur = navigation.addListener("blur", onBlur);
+
       return () => {
         isActive = false;
         endReadingSession();
+        unsubscribeBlur(); // Clean up listener
       };
-    }, [db]) // Do not add readingSessionId here to prevent infinite loops
+    }, [db])
   );
 
   const startReadingSession = async () => {
@@ -117,6 +125,8 @@ const PdfViewer = ({ route, navigation }) => {
           sessionId,
         ]
       );
+
+      console.log(pagesRead);
     } catch (error) {
       console.log("Error in endReadingSession:", error);
     }
@@ -169,10 +179,9 @@ const PdfViewer = ({ route, navigation }) => {
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "#1a1a1a", position: "relative" }}
     >
-      {/* <Button title="Delete Sessions" onPress={deleteTables} />
+      <Button title="Delete Sessions" onPress={deleteTables} />
       <Button title="Get book details" onPress={getTables} />
-      <Button title="End Reading Session" onPress={endReadingSession} /> */}
-
+      <Button title="End Reading Session" onPress={endReadingSession} />
       <Pdf
         source={{ uri: fileUri }}
         style={{ flex: 1, backgroundColor: "#000000" }}
