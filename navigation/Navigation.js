@@ -11,6 +11,7 @@ import EditBook from "../screens/EditBook";
 import Notes from "../screens/Notes";
 import NotesHomeScreen from "../screens/NotesHomeScreen";
 import Insights from "../screens/Insights";
+import BookInsights from "../screens/BookInsights";
 
 const Navigation = () => {
   const Tab = createBottomTabNavigator();
@@ -22,6 +23,7 @@ const Navigation = () => {
     return (
       <InsightsStack.Navigator screenOptions={{ headerShown: false }}>
         <InsightsStack.Screen name="Insights Screen" component={Insights} />
+        <InsightsStack.Screen name="Book Insights" component={BookInsights} />
       </InsightsStack.Navigator>
     );
   }
