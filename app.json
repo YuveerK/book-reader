@@ -8,7 +8,8 @@
     "userInterfaceStyle": "dark",
     "plugins": [
       "@config-plugins/react-native-blob-util",
-      "@config-plugins/react-native-pdf"
+      "@config-plugins/react-native-pdf",
+      "expo-font"
     ],
     "splash": {
       "image": "./assets/splash.png",
@@ -16,7 +17,8 @@
       "backgroundColor": "#000000"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "book-app"
     },
     "android": {
       "adaptiveIcon": {

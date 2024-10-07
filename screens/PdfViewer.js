@@ -179,9 +179,9 @@ const PdfViewer = ({ route, navigation }) => {
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "#1a1a1a", position: "relative" }}
     >
-      <Button title="Delete Sessions" onPress={deleteTables} />
+      {/* <Button title="Delete Sessions" onPress={deleteTables} />
       <Button title="Get book details" onPress={getTables} />
-      <Button title="End Reading Session" onPress={endReadingSession} />
+      <Button title="End Reading Session" onPress={endReadingSession} /> */}
       <Pdf
         source={{ uri: fileUri }}
         style={{ flex: 1, backgroundColor: "#000000" }}

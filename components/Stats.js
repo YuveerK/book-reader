@@ -50,35 +50,36 @@ const Stats = ({ books, navigation }) => {
                   })
                 }
               >
-                {/* Display book name, author, and percentage read */}
-                <View className="w-full flex-row items-center justify-between">
-                  <Text style={styles.bookTitle}>{book.bookName}</Text>
-                  <View>
-                    <AntDesign name="arrowright" size={20} color="white" />
+                {/* Semi-transparent background to mimic blur */}
+                <View style={styles.transparentBackground}>
+                  {/* Display book name, author, and percentage read */}
+                  <View style={styles.titleRow}>
+                    <Text style={styles.bookTitle}>{book.bookName}</Text>
+                    <AntDesign name="arrowright" size={20} color="darkorange" />
                   </View>
-                </View>
-                <Text style={styles.bookAuthor}>by {book.author}</Text>
-                <Text style={styles.percentageText}>
-                  {progress.toFixed(1)}% read - {book.pagesRead}/
-                  {book.totalPages} pages
-                </Text>
+                  <Text style={styles.bookAuthor}>by {book.author}</Text>
+                  <Text style={styles.percentageText}>
+                    {progress.toFixed(1)}% read - {book.pagesRead}/
+                    {book.totalPages} pages
+                  </Text>
 
-                {/* Motivational message */}
-                <Text style={styles.motivationalMessage}>
-                  {getMotivationalMessage(progress)}
-                </Text>
+                  {/* Motivational message */}
+                  <Text style={styles.motivationalMessage}>
+                    {getMotivationalMessage(progress)}
+                  </Text>
 
-                {/* Progress Bar */}
-                <View style={styles.progressBarBackground}>
-                  <View
-                    style={[
-                      styles.progressBarFill,
-                      {
-                        width: `${progress}%`,
-                        backgroundColor: getProgressBarColor(progress),
-                      },
-                    ]}
-                  />
+                  {/* Progress Bar */}
+                  <View style={styles.progressBarBackground}>
+                    <View
+                      style={[
+                        styles.progressBarFill,
+                        {
+                          width: `${progress}%`,
+                          backgroundColor: getProgressBarColor(progress),
+                        },
+                      ]}
+                    />
+                  </View>
                 </View>
               </TouchableOpacity>
             )}
@@ -98,14 +99,22 @@ const styles = StyleSheet.create({
   },
   bookProgressContainer: {
     marginBottom: 16,
-    padding: 10,
     borderRadius: 8,
-    backgroundColor: "#1F2937", // Darker background for each book entry
+    overflow: "hidden", // Prevent content overflow
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  transparentBackground: {
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: "rgba(255, 255, 255, 0.1)", // Semi-transparent background
+  },
+  titleRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   bookTitle: {
     color: "#F3F4F6",

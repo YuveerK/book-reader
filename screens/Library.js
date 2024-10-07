@@ -96,7 +96,7 @@ const Library = ({ navigation }) => {
       </Text>
       <View className="px-2 mb-4 flex-row items-center justify-between">
         <View className="flex flex-row rounded-md items-center flex-1 px-4 py-2 border border-gray-500">
-          <AntDesign name="search1" size={24} color="white" />
+          <AntDesign name="search1" size={24} color="darkorange" />
           <TextInput
             onChangeText={setSearch}
             value={search}
@@ -109,7 +109,7 @@ const Library = ({ navigation }) => {
           onPress={() => setIsFilterOpened(true)}
           className="ml-2 border border-gray-500 px-4 py-2 rounded-md"
         >
-          <Ionicons name="filter" size={24} color="white" />
+          <Ionicons name="filter" size={24} color="darkorange" />
         </TouchableOpacity>
       </View>
 
@@ -202,7 +202,7 @@ const Library = ({ navigation }) => {
       {/* Add Book Floating Button */}
       <TouchableOpacity
         onPress={() => navigation.navigate("Add Book")}
-        className="absolute bottom-6 right-6 bg-blue-600 p-4 rounded-full items-center justify-center shadow-lg"
+        className="absolute bottom-6 right-6 bg-orange-600 p-4 rounded-full items-center justify-center shadow-lg"
         style={{
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 2 },

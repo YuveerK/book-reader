@@ -142,9 +142,11 @@ const Insights = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <Text className="text-white text-2xl font-bold mb-4">
-        Reading Insights
-      </Text>
+      <View className="w-full p-4">
+        <Text className="text-white text-2xl text-center font-bold mb-4">
+          Reading Insights 📊
+        </Text>
+      </View>
       {insights && insights.sessions && (
         <InsightChart insights={insights.sessions} />
       )}
@@ -153,23 +155,65 @@ const Insights = () => {
       {insights && insights.totalSessions ? (
         <View>
           {/* Summary Section */}
-          <View className="bg-gray-800 p-4 rounded-lg mb-4">
-            <Text className="text-white text-lg mb-2">
-              Total Sessions: {insights.totalSessions}
+          <View className="bg-[#1E1E1E] p-6 rounded-lg mb-4 border border-gray-700 shadow-lg space-y-6">
+            {/* Heading */}
+            <Text className="text-white text-xl mb-4 font-bold tracking-wide">
+              📊 Your Reading Insights
             </Text>
-            <Text className="text-white text-lg mb-2">
-              Total Pages Read: {insights.totalPagesRead}
-            </Text>
-            <Text className="text-white text-lg mb-2">
-              Total Duration: {formatTime(insights.totalDuration)}
-            </Text>
-            <Text className="text-white text-lg mb-2">
-              Average Pages per Session:{" "}
-              {insights.averagePagesPerSession?.toFixed(2)}
-            </Text>
-            <Text className="text-white text-lg mb-2">
-              Average Time per Session:{" "}
-              {formatTime(insights.averageTimePerSession)}
+
+            {/* Stats Row 1 */}
+            <View className="flex flex-row justify-between mb-4">
+              <View className="items-center flex-1">
+                <Text className="text-[#FFA500] text-3xl">📚</Text>
+                <Text className="text-white text-lg mt-2">Total Sessions</Text>
+                <Text className="text-[#FF6347] text-2xl font-bold mt-1">
+                  {insights.totalSessions}
+                </Text>
+              </View>
+
+              <View className="items-center flex-1">
+                <Text className="text-[#32CD32] text-3xl">📄</Text>
+                <Text className="text-white text-lg mt-2">Pages Read</Text>
+                <Text className="text-[#32CD32] text-2xl font-bold mt-1">
+                  {insights.totalPagesRead}
+                </Text>
+              </View>
+            </View>
+
+            {/* Stats Row 2 */}
+            <View className="flex flex-row justify-between mb-4">
+              <View className="items-center flex-1">
+                <Text className="text-[#1E90FF] text-3xl">⏳</Text>
+                <Text className="text-white text-lg mt-2">Total Duration</Text>
+                <Text className="text-[#1E90FF] text-2xl font-bold mt-1">
+                  {formatTime(insights.totalDuration)}
+                </Text>
+              </View>
+
+              <View className="items-center flex-1">
+                <Text className="text-[#FFD700] text-3xl">📈</Text>
+                <Text className="text-white text-lg mt-2">
+                  Avg. Pages/Session
+                </Text>
+                <Text className="text-[#FFD700] text-2xl font-bold mt-1">
+                  {insights.averagePagesPerSession?.toFixed(2)}
+                </Text>
+              </View>
+            </View>
+
+            {/* Stats Row 3 */}
+            <View className="items-center mb-4">
+              <Text className="text-[#FF69B4] text-3xl">🕒</Text>
+              <Text className="text-white text-lg mt-2">Avg. Time/Session</Text>
+              <Text className="text-[#FF69B4] text-2xl font-bold mt-1">
+                {formatTime(insights.averageTimePerSession)}
+              </Text>
+            </View>
+
+            {/* Summary */}
+            <Text className="text-[#D1FAE5] text-base italic mt-4 text-center">
+              "Keep up the great work! You're building an amazing reading
+              habit!" ✨
             </Text>
           </View>
 

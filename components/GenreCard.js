@@ -6,14 +6,14 @@ const images = {
   Fiction: require("../assets/fiction.jpeg"),
   "Non-fiction": require("../assets/non-fiction.jpg"),
   Mystery: require("../assets/mystery.jpg"),
-  Thriller: require("../assets/no.png"),
+  Thriller: require("../assets/thriller.jpg"),
   Romance: require("../assets/romance.png"),
   "Science Fiction": require("../assets/science fiction.jpg"),
   Fantasy: require("../assets/fantasy.webp"),
   Biography: require("../assets/biography.jpg"),
   "Self-help": require("../assets/self-help.jpg"),
   Historical: require("../assets/historical.jpg"),
-  "Children's": require("../assets/children.avif"),
+  "Children's": require("../assets/children.png"),
   Adventure: require("../assets/adventure.webp"),
   Horror: require("../assets/horror.webp"),
   Poetry: require("../assets/poetry.jpg"),
@@ -22,7 +22,7 @@ const images = {
   Classics: require("../assets/classic.jpg"),
   Philosophy: require("../assets/philosophy.jpg"),
   Crime: require("../assets/crime.jpg"),
-  All: require("../assets/no.png"), // Default image for "All"
+  All: require("../assets/all.jpg"), // Default image for "All"
 };
 
 const GenreCard = ({ genre }) => {

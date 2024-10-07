@@ -66,7 +66,7 @@ const Navigation = () => {
           padding: 10,
           paddingBottom: 5,
         },
-        tabBarActiveTintColor: "white",
+        tabBarActiveTintColor: "#FF8C00", // Dark orange color
         tabBarInactiveTintColor: "white",
         headerShown: false,
         tabBarIcon: ({ focused, color, size }) => {

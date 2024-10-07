@@ -89,12 +89,12 @@ const EditBook = ({ route }) => {
     }
   };
 
-  // Image Picker Function
+  // Image Picker Function with matching aspect ratio to AddBook
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [2, 3], // Matching aspect ratio to AddBook
       quality: 1,
     });
     if (!result.canceled) {
@@ -149,7 +149,7 @@ const EditBook = ({ route }) => {
         <View className="items-center justify-center mb-8">
           <TouchableOpacity
             onPress={pickImage}
-            className="w-48 h-64 rounded-md border border-gray-500 items-center justify-center bg-gray-900"
+            className="w-48 h-72 rounded-md border border-gray-500 items-center justify-center bg-gray-900"
           >
             {bookCover ? (
               <Image
